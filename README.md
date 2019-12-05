@@ -1,14 +1,50 @@
-# flutter_speed_dial_material_design
+# Flutter Speed dial of Material Design style
 
-A new Flutter package project.
+Flutter package which applies Material design Speed dial
 
-## Getting Started
+## Preview
+There are several packages that provides fancy speed dial.
+However, as most of those do not work properly on docked FAB using notch, I referenced Andrea Bizzoto and Matt Carroll's idea/code specified [here](https://medium.com/coding-with-flutter/flutter-bottomappbar-navigation-with-fab-8b962bb55013).
+Truly appreciate to Andrea and Matt for sharing such an awesome idea and codes.
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+![](screenshots/sample_screen.gif)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Useage
+```dart
+Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(child: _buildBody()),
+      floatingActionButton: _buildFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+Widget _buildFloatingActionButton() {
+    final icons = [
+      SpeedDialAction(child: Icon(Icons.mode_edit)),
+      SpeedDialAction(child: Icon(Icons.date_range)),
+      SpeedDialAction(child: Icon(Icons.list)),
+    ];
+
+    return SpeedDialFloatingActionButton(
+      actions: icons,
+      childOnFold: Icon(Icons.event_note),
+      childOnUnfold: Icon(Icons.close),
+      useRotateAnimation: true,
+      onAction: _onSpeedDialAction,
+    );
+  }
+  
+_onSpeedDialAction(int selectedActionIndex) {
+  print('$selectedActionIndex Selected');
+}
+```
+
+## TO-DOs
+- Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
+- Unfold function to force close the dial
+- Providing option for modal background with color parameter
+
+## Contributing
+Any pull requests for implementing To-Do functions are always welcome!
