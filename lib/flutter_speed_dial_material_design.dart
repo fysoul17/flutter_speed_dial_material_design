@@ -21,6 +21,8 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   /// The [childOnFold] must not be null. Additionally,
   /// if [childOnUnfold] is specified, two widgets([childOnFold] and [childOnUnfold]) will be switched with animation when speed dial is opened/closed.
 
+  /// NOTE: In order to apply fade transition between [childOnFold] and [childOnUnfold], make sure one of those has Key field. (eg. ValueKey<int>(value) or UniqueKey()).
+  ///       As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
   SpeedDialFloatingActionButton({
     @required this.actions,
     this.onAction,
@@ -130,8 +132,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: CurvedAnimation(
           parent: _controller,
-          curve: Interval(0.0, (index + 1) / widget.actions.length,
-              curve: Curves.linear),
+          curve: Interval(0.0, (index + 1) / widget.actions.length, curve: Curves.linear),
         ),
         child: FloatingActionButton(
           backgroundColor: backgroundColor,
@@ -153,9 +154,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
             if (widget.childOnUnfold == null) {
               return _buildRotation(widget.childOnFold);
             } else {
-              return widget.useRotateAnimation
-                  ? _buildRotation(_buildAnimatedSwitcher())
-                  : _buildAnimatedSwitcher();
+              return widget.useRotateAnimation ? _buildRotation(_buildAnimatedSwitcher()) : _buildAnimatedSwitcher();
             }
           }),
       elevation: 2.0,
@@ -180,8 +179,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   Widget _buildAnimatedSwitcher() {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: widget.animationDuration),
-      child:
-          _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
+      child: _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
     );
   }
 
