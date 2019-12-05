@@ -45,6 +45,7 @@ _onSpeedDialAction(int selectedActionIndex) {
 - Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
 - Unfold function to force close the dial
 - Providing option for modal background with color parameter
+- Text labels on each action widgets
 
 ## Contributing
 Any pull requests for implementing To-Do functions are always welcome!
