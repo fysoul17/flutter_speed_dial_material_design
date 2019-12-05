@@ -3,7 +3,7 @@
 Flutter package which applies Material design Speed dial
 
 ## Preview
-There are several packages that provides fancy speed dial.
+There are several packages that provide fancy speed dial.
 However, as most of those do not work properly on docked FAB using notch, I referenced Andrea Bizzoto and Matt Carroll's idea/code specified [here](https://medium.com/coding-with-flutter/flutter-bottomappbar-navigation-with-fab-8b962bb55013).
 Truly appreciate to Andrea and Matt for sharing such an awesome idea and codes.
 
