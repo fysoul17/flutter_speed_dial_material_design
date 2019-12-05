@@ -29,7 +29,8 @@ Widget _buildFloatingActionButton() {
 
     return SpeedDialFloatingActionButton(
       actions: icons,
-      childOnFold: Icon(Icons.event_note),
+      // Make sure one of child widget has Key value to have fade transition if widgets are same type.
+      childOnFold: Icon(Icons.event_note, Key: UniqueKey()),
       childOnUnfold: Icon(Icons.add),
       useRotateAnimation: true,
       onAction: _onSpeedDialAction,
@@ -41,6 +42,10 @@ _onSpeedDialAction(int selectedActionIndex) {
 }
 ```
 
+### Fade Transition animation between child widgets
+In order to apply fade transition between [childOnFold] and [childOnUnfold], make sure one of those has Key field. (eg. ValueKey<int>(value) or UniqueKey()).
+As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
+    
 ## TO-DOs
 - Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
 - Unfold function to force close the dial
