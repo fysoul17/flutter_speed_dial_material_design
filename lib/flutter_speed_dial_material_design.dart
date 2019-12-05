@@ -12,9 +12,6 @@ import 'layout.dart';
 // Codes from: https://github.com/bizz84/bottom_bar_fab_flutter
 //             https://github.com/matthew-carroll/fluttery/blob/master/lib/src/layout_overlays.dart
 
-// TODO: Fold(), Unfold() from outside of widget
-// TODO: Modal background
-
 class SpeedDialFloatingActionButton extends StatelessWidget {
   /// Creates Floating action button with speed dial attached.
   ///
@@ -133,7 +130,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: CurvedAnimation(
           parent: _controller,
-          curve: Interval(0.0, (index + 1) / widget.actions.length, curve: Curves.linear),
+          curve: Interval(0.0, (index + 1) / widget.actions.length,
+              curve: Curves.linear),
         ),
         child: FloatingActionButton(
           backgroundColor: backgroundColor,
@@ -155,7 +153,9 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
             if (widget.childOnUnfold == null) {
               return _buildRotation(widget.childOnFold);
             } else {
-              return widget.useRotateAnimation ? _buildRotation(_buildAnimatedSwitcher()) : _buildAnimatedSwitcher();
+              return widget.useRotateAnimation
+                  ? _buildRotation(_buildAnimatedSwitcher())
+                  : _buildAnimatedSwitcher();
             }
           }),
       elevation: 2.0,
@@ -180,7 +180,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   Widget _buildAnimatedSwitcher() {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: widget.animationDuration),
-      child: _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
+      child:
+          _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
     );
   }
 
