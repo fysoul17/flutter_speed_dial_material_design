@@ -34,8 +34,8 @@ class MyPage extends StatelessWidget {
     return SpeedDialFloatingActionButton(
       actions: icons,
       childOnFold: Icon(Icons.event_note, key: UniqueKey()),
-      childOnUnfold: Icon(Icons.add),
-      useRotateAnimation: true,
+      //childOnUnfold: Icon(Icons.add),
+      useRotateAnimation: false,
       onAction: _onSpeedDialAction,
     );
   }

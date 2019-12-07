@@ -1,3 +1,7 @@
+## [1.0.6] - 07/Dec/2019
+
+-   Bug Fix: useRotation parameter is working correctly now for single child FAB
+
 ## [1.0.5] - 06/Dec/2019
 
 -   Runnable example updated

@@ -132,7 +132,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
       child: ScaleTransition(
         scale: CurvedAnimation(
           parent: _controller,
-          curve: Interval(0.0, (index + 1) / widget.actions.length, curve: Curves.linear),
+          curve: Interval(0.0, (index + 1) / widget.actions.length,
+              curve: Curves.linear),
         ),
         child: FloatingActionButton(
           backgroundColor: backgroundColor,
@@ -152,9 +153,13 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
           animation: _controller,
           builder: (context, child) {
             if (widget.childOnUnfold == null) {
-              return _buildRotation(widget.childOnFold);
+              return widget.useRotateAnimation
+                  ? _buildRotation(widget.childOnFold)
+                  : widget.childOnFold;
             } else {
-              return widget.useRotateAnimation ? _buildRotation(_buildAnimatedSwitcher()) : _buildAnimatedSwitcher();
+              return widget.useRotateAnimation
+                  ? _buildRotation(_buildAnimatedSwitcher())
+                  : _buildAnimatedSwitcher();
             }
           }),
       elevation: 2.0,
@@ -179,7 +184,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   Widget _buildAnimatedSwitcher() {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: widget.animationDuration),
-      child: _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
+      child:
+          _controller.value < 0.5 ? widget.childOnFold : widget.childOnUnfold,
     );
   }
 
