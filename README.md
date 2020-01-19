@@ -9,7 +9,7 @@ Truly appreciate to Andrea and Matt for sharing such an awesome idea and codes.
 
 ![](screenshots/sample_screen.gif)
 
-## Useage
+## Usage
 ```dart
 Widget build(BuildContext context) {
     return Scaffold(
