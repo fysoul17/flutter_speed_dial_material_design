@@ -1,3 +1,7 @@
+## [1.1.1] - 24/Jan/2020
+
+- Updated README
+
 ## [1.1.0] - 24/Jan/2020
 
 - Added SpeedDialController with unfold() function. You can now unfold manually using the controller.
