@@ -10,6 +10,8 @@ Truly appreciate to Andrea and Matt for sharing such an awesome idea and codes.
 ![](screenshots/sample_screen.gif)
 
 ## Usage
+
+### Basic usage
 ```dart
 Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +44,19 @@ _onSpeedDialAction(int selectedActionIndex) {
 }
 ```
 
+### Using controller
+```dart
+SpeedDialController _controller = SpeedDialController();
+
+SpeedDialFloatingActionButton(
+      controller: _controller,
+      ...
+    );
+    
+// Use anywhere to mannually unfold
+_controller.unfold();
+```
+
 ### Fade Transition animation between child widgets
 In order to apply fade transition between [childOnFold] and [childOnUnfold], make sure one of those has Key field. (eg. ValueKey<int>(value) or UniqueKey()).
 As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
@@ -56,6 +71,7 @@ As we using AnimatedSwitcher for transition animation, no key with same type of 
 Any pull requests for implementing To-Do functions are always welcome!
 
 ## Support
-If the package was useful or saved your time, it would be truly grateful if you can buy me a cup of coffee!
+If the package was useful or saved your time, please do not hesitate to buy me a cup of coffee! ;)  
+The more caffeine I get, the more useful projects I can make in the future. 
 
 <a href="https://www.buymeacoffee.com/Oj17EcZ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
