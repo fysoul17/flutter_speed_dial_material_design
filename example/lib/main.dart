@@ -13,11 +13,31 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyPage extends StatelessWidget {
+class MyPage extends StatefulWidget {
+  @override
+  _MyPageState createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  SpeedDialController _controller = SpeedDialController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('FAB with Speed dial Sample')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('FAB with Speed dial Sample'),
+            RaisedButton(
+              child: Text("Unfold FAB"),
+              onPressed: () {
+                _controller.unfold();
+              },
+            )
+          ],
+        ),
+      ),
       floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: _buildBottomBar(),
@@ -37,6 +57,7 @@ class MyPage extends StatelessWidget {
       //childOnUnfold: Icon(Icons.add),
       useRotateAnimation: false,
       onAction: _onSpeedDialAction,
+      controller: _controller,
     );
   }
 
