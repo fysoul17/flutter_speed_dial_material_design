@@ -62,10 +62,10 @@ In order to apply fade transition between [childOnFold] and [childOnUnfold], mak
 As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
     
 ## TO-DOs
-- Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
-- Unfold function to force close the dial
-- Providing option for modal background with color parameter
-- Text labels on each action widgets
+- [ ] Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
+- [X] Unfold function to force close the dial
+- [ ] Providing option for modal background with color parameter
+- [ ] Text labels on each action widgets
 
 ## Contributing
 Any pull requests for implementing To-Do functions are always welcome!
