@@ -9,7 +9,7 @@ Truly appreciate to Andrea and Matt for sharing such an awesome idea and codes.
 
 ![](screenshots/sample_screen.gif)
 
-## Useage
+## Usage
 ```dart
 Widget build(BuildContext context) {
     return Scaffold(
@@ -54,3 +54,8 @@ As we using AnimatedSwitcher for transition animation, no key with same type of 
 
 ## Contributing
 Any pull requests for implementing To-Do functions are always welcome!
+
+## Support
+If the package was useful or saved your time, it would be truly grateful if you can buy me a cup of coffee!
+
+<a href="https://www.buymeacoffee.com/Oj17EcZ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
