@@ -71,7 +71,7 @@ As we using AnimatedSwitcher for transition animation, no key with same type of 
 Any pull requests for implementing To-Do functions are always welcome!
 
 ### Other useful packages you might be instrested
-[Firebase Auth Simplify](https://github.com/fysoul17/firebase_auth_simplify/)   
+[Firebase Auth Simplify](https://pub.dev/packages/firebase_auth_simplify) 
 [Google Maps Place Picker](https://pub.dev/packages/google_maps_place_picker)
 
 ## Support
