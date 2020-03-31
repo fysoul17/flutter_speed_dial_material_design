@@ -58,6 +58,7 @@ class _MyPageState extends State<MyPage> {
       useRotateAnimation: false,
       onAction: _onSpeedDialAction,
       controller: _controller,
+      isDismissible: true,
     );
   }
 

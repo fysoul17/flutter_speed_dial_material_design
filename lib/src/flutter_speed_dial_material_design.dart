@@ -31,6 +31,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
     this.useRotateAnimation = false,
     this.animationDuration = 250,
     this.controller,
+    this.isDismissible = false,
   });
 
   final List<SpeedDialAction> actions;
@@ -40,6 +41,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   final int animationDuration;
   final bool useRotateAnimation;
   final SpeedDialController controller;
+  final bool isDismissible;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
             childOnUnfold: childOnUnfold,
             animationDuration: animationDuration,
             useRotateAnimation: useRotateAnimation,
+            isDismissible: isDismissible,
           ),
         );
       },
@@ -83,6 +86,7 @@ class SpeedDial extends StatefulWidget {
     this.animationDuration,
     this.useRotateAnimation,
     this.controller,
+    this.isDismissible,
   });
 
   final SpeedDialController controller;
@@ -92,6 +96,7 @@ class SpeedDial extends StatefulWidget {
   final Widget childOnUnfold;
   final int animationDuration;
   final bool useRotateAnimation;
+  final bool isDismissible;
 
   @override
   State createState() => _SpeedDialState();
@@ -110,6 +115,10 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
 
     widget.controller ?? SpeedDialController()
       ..setAnimator(_controller);
+
+    if (widget.isDismissible) {
+      _controller.addStatusListener(_onDismissible);
+    }
   }
 
   @override
@@ -200,5 +209,33 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   void _onAction(int index) {
     _controller.reverse();
     widget.onAction(index);
+  }
+
+  void _onDismissible(AnimationStatus status) {
+    Future<bool> _onReturn() async {
+      _controller.reverse();
+      return false;
+    }
+  
+    if (status == AnimationStatus.forward) {
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          fullscreenDialog: true,
+          opaque: false,
+          barrierDismissible: true,
+          transitionDuration: Duration(milliseconds: 100),
+          barrierColor: Colors.black54,
+          pageBuilder: (BuildContext context, _, __) {
+            return WillPopScope(
+              child: Container(),
+              onWillPop: _onReturn,
+            );
+          },
+        ),
+      );
+    }
+    if (status == AnimationStatus.reverse) {
+      Navigator.pop(context);
+    }
   }
 }
