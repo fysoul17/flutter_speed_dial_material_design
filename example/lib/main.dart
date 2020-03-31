@@ -45,10 +45,11 @@ class _MyPageState extends State<MyPage> {
   }
 
   Widget _buildFloatingActionButton() {
+    final TextStyle customStyle = TextStyle(inherit: false, color: Colors.black);
     final icons = [
-      SpeedDialAction(child: Icon(Icons.mode_edit)),
-      SpeedDialAction(child: Icon(Icons.date_range)),
-      SpeedDialAction(child: Icon(Icons.list)),
+      SpeedDialAction(child: Icon(Icons.mode_edit), label: Text('Edit any item', style: customStyle)),
+      SpeedDialAction(child: Icon(Icons.date_range), label: Text('Choose the date', style: customStyle)),
+      SpeedDialAction(child: Icon(Icons.list), label: Text('Menu', style: customStyle)),
     ];
 
     return SpeedDialFloatingActionButton(
