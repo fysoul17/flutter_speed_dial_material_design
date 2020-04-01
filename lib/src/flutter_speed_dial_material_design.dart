@@ -31,6 +31,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
     this.useRotateAnimation = false,
     this.animationDuration = 250,
     this.controller,
+    this.isDismissible = false,
   });
 
   final List<SpeedDialAction> actions;
@@ -40,23 +41,23 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   final int animationDuration;
   final bool useRotateAnimation;
   final SpeedDialController controller;
+  final bool isDismissible;
 
   @override
   Widget build(BuildContext context) {
     return AnchoredOverlay(
       showOverlay: true,
       overlayBuilder: (context, offset) {
-        return CenterAbout(
-          position: Offset(offset.dx, offset.dy - actions.length * 35.0),
-          child: SpeedDial(
-            controller: controller,
-            actions: actions,
-            onAction: onAction,
-            childOnFold: childOnFold,
-            childOnUnfold: childOnUnfold,
-            animationDuration: animationDuration,
-            useRotateAnimation: useRotateAnimation,
-          ),
+        return SpeedDial(
+          controller: controller,
+          actions: actions,
+          onAction: onAction,
+          childOnFold: childOnFold,
+          childOnUnfold: childOnUnfold,
+          animationDuration: animationDuration,
+          useRotateAnimation: useRotateAnimation,
+          isDismissible: isDismissible,
+          offset: Offset(offset.dx, offset.dy),
         );
       },
       child: FloatingActionButton(onPressed: () {}),
@@ -64,14 +65,11 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   }
 }
 
-class SpeedDialAction extends StatelessWidget {
-  SpeedDialAction({this.child});
+class SpeedDialAction {
+  SpeedDialAction({this.child, this.label});
+  
   final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return child;
-  }
+  final Widget label;
 }
 
 class SpeedDial extends StatefulWidget {
@@ -83,6 +81,8 @@ class SpeedDial extends StatefulWidget {
     this.animationDuration,
     this.useRotateAnimation,
     this.controller,
+    this.isDismissible,
+    this.offset,
   });
 
   final SpeedDialController controller;
@@ -92,6 +92,8 @@ class SpeedDial extends StatefulWidget {
   final Widget childOnUnfold;
   final int animationDuration;
   final bool useRotateAnimation;
+  final bool isDismissible;
+  final Offset offset;
 
   @override
   State createState() => _SpeedDialState();
@@ -110,6 +112,10 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
 
     widget.controller ?? SpeedDialController()
       ..setAnimator(_controller);
+
+    if (widget.isDismissible) {
+      _controller.addStatusListener(_onDismissible);
+    }
   }
 
   @override
@@ -118,39 +124,96 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   }
 
   Widget _buildActions() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(widget.actions.length, (int index) {
-        return _buildChild(index);
-      }).reversed.toList()
-        ..add(
-          _buildFab(),
+    final Size fullsize = MediaQuery.of(context).size; // device size
+    final double wButton = 28; // button width
+    final double hButtom = 28; // button height
+
+    double start;
+    if (widget.offset.dx > (fullsize.width / 2)) {
+      start = fullsize.width - (widget.offset.dx + wButton);
+    } else {
+      start = fullsize.width - widget.offset.dx - wButton;
+    }
+
+    double bottom;
+    if (widget.offset.dy > (fullsize.height / 2)) {
+      bottom = fullsize.height - widget.offset.dy - hButtom;
+    } else {
+      bottom = fullsize.height + (widget.offset.dy.abs() - hButtom);
+    }
+    
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        Positioned.directional(
+          textDirection: TextDirection.rtl,
+          bottom: bottom,
+          start: start,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(widget.actions.length, (int index) {
+              return _buildChild(index);
+            }).reversed.toList()
+              ..add(
+                _buildFab(),
+              ),
+          ),
         ),
+      ],
     );
   }
 
   Widget _buildChild(int index) {
     Color backgroundColor = Theme.of(context).cardColor;
     Color foregroundColor = Theme.of(context).accentColor;
-    return Container(
-      height: 70.0,
-      width: 56.0,
-      alignment: FractionalOffset.topCenter,
-      child: ScaleTransition(
-        scale: CurvedAnimation(
-          parent: _controller,
-          curve: Interval(0.0, (index + 1) / widget.actions.length,
-              curve: Curves.linear),
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        FadeTransition(
+          opacity: Tween<double>(begin: 0, end: 1).animate(_controller),
+          child: widget.actions[index].label != null
+              ? Container(
+            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+            margin: EdgeInsets.only(right: 5.0, bottom: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(6.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.7),
+                  offset: Offset(0.8, 0.8),
+                  blurRadius: 2.4,
+                )
+              ],
+            ),
+            child: widget.actions[index].label,
+          )
+              : Container(),
         ),
-        child: FloatingActionButton(
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
-          mini: true,
-          child: widget.actions[index],
-          onPressed: () => _onAction(index),
+        Container(
+          height: 70.0,
+          width: 56.0,
+          alignment: FractionalOffset.topCenter,
+          child: ScaleTransition(
+            scale: CurvedAnimation(
+              parent: _controller,
+              curve: Interval(0.0, (index + 1) / widget.actions.length,
+                  curve: Curves.linear),
+            ),
+            child: FloatingActionButton(
+              backgroundColor: backgroundColor,
+              foregroundColor: foregroundColor,
+              mini: true,
+              child: widget.actions[index].child,
+              onPressed: () => _onAction(index),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -200,5 +263,33 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   void _onAction(int index) {
     _controller.reverse();
     widget.onAction(index);
+  }
+
+  void _onDismissible(AnimationStatus status) {
+    Future<bool> _onReturn() async {
+      _controller.reverse();
+      return false;
+    }
+  
+    if (status == AnimationStatus.forward) {
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          fullscreenDialog: true,
+          opaque: false,
+          barrierDismissible: true,
+          transitionDuration: Duration(milliseconds: 100),
+          barrierColor: Colors.black54,
+          pageBuilder: (BuildContext context, _, __) {
+            return WillPopScope(
+              child: Container(),
+              onWillPop: _onReturn,
+            );
+          },
+        ),
+      );
+    }
+    if (status == AnimationStatus.reverse) {
+      Navigator.pop(context);
+    }
   }
 }
