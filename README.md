@@ -65,7 +65,7 @@ As we using AnimatedSwitcher for transition animation, no key with same type of 
 - [ ] Ability to display/hide speed dial when it is needed. (ex. hiding on scroll)
 - [X] Unfold function to force close the dial
 - [ ] Providing option for modal background with color parameter
-- [ ] Text labels on each action widgets
+- [X] Text labels on each action widgets (Thanks to @CarlosHJuniior)
 
 ## Contributing
 Any pull requests for implementing To-Do functions are always welcome!
