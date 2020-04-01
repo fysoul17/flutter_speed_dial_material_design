@@ -67,7 +67,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
 
 class SpeedDialAction {
   SpeedDialAction({this.child, this.label});
-  
+
   final Widget child;
   final Widget label;
 }
@@ -141,7 +141,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
     } else {
       bottom = fullsize.height + (widget.offset.dy.abs() - hButtom);
     }
-    
+
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -168,7 +168,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
   Widget _buildChild(int index) {
     Color backgroundColor = Theme.of(context).cardColor;
     Color foregroundColor = Theme.of(context).accentColor;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -177,21 +177,21 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
           opacity: Tween<double>(begin: 0, end: 1).animate(_controller),
           child: widget.actions[index].label != null
               ? Container(
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
-            margin: EdgeInsets.only(right: 5.0, bottom: 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.7),
-                  offset: Offset(0.8, 0.8),
-                  blurRadius: 2.4,
+                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+                  margin: EdgeInsets.only(right: 5.0, bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.7),
+                        offset: Offset(0.8, 0.8),
+                        blurRadius: 2.4,
+                      )
+                    ],
+                  ),
+                  child: widget.actions[index].label,
                 )
-              ],
-            ),
-            child: widget.actions[index].label,
-          )
               : Container(),
         ),
         Container(
@@ -270,7 +270,7 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
       _controller.reverse();
       return false;
     }
-  
+
     if (status == AnimationStatus.forward) {
       Navigator.of(context).push(
         PageRouteBuilder(
