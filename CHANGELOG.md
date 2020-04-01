@@ -1,3 +1,7 @@
+## [1.2.0] - 01/Apr/2020
+
+- Feature added. Text labels on each action widgets (by @CarlosHJuniior).
+
 ## [1.1.1] - 24/Jan/2020
 
 - Updated README
