@@ -20,18 +20,22 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   ///
   /// The [childOnFold] must not be null. Additionally,
   /// if [childOnUnfold] is specified, two widgets([childOnFold] and [childOnUnfold]) will be switched with animation when speed dial is opened/closed.
-
+  /// 
   /// NOTE: In order to apply fade transition between [childOnFold] and [childOnUnfold], make sure one of those has Key field. (eg. ValueKey<int>(value) or UniqueKey()).
   ///       As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
   SpeedDialFloatingActionButton({
-    @required this.actions,
-    this.onAction,
-    @required this.childOnFold,
-    this.childOnUnfold,
-    this.useRotateAnimation = false,
-    this.animationDuration = 250,
-    this.controller,
-    this.isDismissible = false,
+      @required this.actions,
+      this.onAction,
+      @required this.childOnFold,
+      this.childOnUnfold,
+      this.useRotateAnimation = false,
+      this.backgroundColor,
+      this.foregroundColor,
+      this.screenColor,
+      this.animationDuration = 250,
+      this.controller,
+      this.isDismissible = false,
+      this.labelPosition
   });
 
   final List<SpeedDialAction> actions;
@@ -42,6 +46,38 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   final bool useRotateAnimation;
   final SpeedDialController controller;
   final bool isDismissible;
+
+  /// The floating button's background color.
+  ///
+  /// If this property is null, then the [Theme]'s
+  /// [ThemeData.floatingActionButtonTheme.backgroundColor] is used. If that
+  /// property is also null, then the [Theme]'s
+  /// [ThemeData.colorScheme.secondary] color is used.
+  final Color backgroundColor;
+
+  /// The floating button's foreground color.
+  ///
+  /// If this property is null, then the [Theme]'s
+  /// [ThemeData.floatingActionButtonTheme.foregroundColor] is used. If that
+  /// property is also null, then the [Theme]'s
+  /// [ThemeData.colorScheme.onSecondary] color is used.
+  final Color foregroundColor;
+
+  /// The screen background color when the speed dial is unfolded.
+  ///
+  /// If this property is null, then the background will be transparent.
+  /// Tip: use the opacity property to create semi-transparent backgrounds. Example:
+  /// ```dart 
+  /// screenColor: Colors.black.withOpacity(0.2) 
+  /// ```
+  final Color screenColor;
+
+  /// Define if the action's labels will be at the left or at the right of their action button.
+  /// 
+  /// If this property is null, then the label position will obey the following rule:
+  /// when the floating button is positioned before the middle of the display (on the x axis), the label will be at the right of the action button,
+  /// otherwise the label will be at the left of the action button.
+  final LabelPosition labelPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +92,12 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
           childOnUnfold: childOnUnfold,
           animationDuration: animationDuration,
           useRotateAnimation: useRotateAnimation,
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          screenColor: screenColor,
           isDismissible: isDismissible,
           offset: Offset(offset.dx, offset.dy),
+          labelPosition: labelPosition,
         );
       },
       child: FloatingActionButton(onPressed: () {}),
@@ -66,10 +106,27 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
 }
 
 class SpeedDialAction {
-  SpeedDialAction({this.child, this.label});
+  SpeedDialAction({
+      this.child, 
+      this.label, 
+      this.backgroundColor, 
+      this.foregroundColor
+  });
 
   final Widget child;
   final Widget label;
+
+  /// The action button's background color.
+  ///
+  /// If this property is null, then the [Theme]'s
+  /// [ThemeData.cardColor] is used.
+  final Color backgroundColor;
+
+  /// The action button's foreground color.
+  ///
+  /// If this property is null, then the [Theme]'s
+  /// [ThemeData.accentColor] is used.
+  final Color foregroundColor;
 }
 
 class SpeedDial extends StatefulWidget {
@@ -80,9 +137,13 @@ class SpeedDial extends StatefulWidget {
     this.childOnUnfold,
     this.animationDuration,
     this.useRotateAnimation,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.screenColor,
     this.controller,
     this.isDismissible,
     this.offset,
+    this.labelPosition,
   });
 
   final SpeedDialController controller;
@@ -92,8 +153,12 @@ class SpeedDial extends StatefulWidget {
   final Widget childOnUnfold;
   final int animationDuration;
   final bool useRotateAnimation;
+  final Color screenColor;
+  final Color backgroundColor;
+  final Color foregroundColor;
   final bool isDismissible;
   final Offset offset;
+  final LabelPosition labelPosition;
 
   @override
   State createState() => _SpeedDialState();
@@ -129,8 +194,14 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
     final double hButtom = 28; // button height
 
     double start;
-    if (widget.offset.dx > (fullsize.width / 2)) {
-      start = fullsize.width - (widget.offset.dx + wButton);
+    LabelPosition labelPosition = widget.labelPosition;
+    if (labelPosition == null) {
+      labelPosition = widget.offset.dx > (fullsize.width / 2)
+          ? LabelPosition.Left
+          : LabelPosition.Right;
+    }
+    if (labelPosition == LabelPosition.Right) {
+      start = widget.offset.dx - wButton;
     } else {
       start = fullsize.width - widget.offset.dx - wButton;
     }
@@ -142,19 +213,61 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
       bottom = fullsize.height + (widget.offset.dy.abs() - hButtom);
     }
 
+    return widget.screenColor != null
+        ? _buildActionsWithOverlay(bottom, start, labelPosition)
+        : _buildActionsWithoutOverlay(bottom, start, labelPosition);
+  }
+
+  Widget _buildActionsWithOverlay([
+        double bottom, 
+        double start, 
+        LabelPosition labelPosition
+  ]) {
+    var screenColorSequence = TweenSequence<Color>([
+      TweenSequenceItem(
+          weight: 1.0,
+          tween: ColorTween(
+              begin: Color.fromARGB(0, 0, 0, 0), end: widget.screenColor))
+    ]);
+
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          if (_controller.isDismissed == false)
+            return GestureDetector(
+                onTap: toggle,
+                child: Container(
+                    color: screenColorSequence
+                        .evaluate(AlwaysStoppedAnimation(_controller.value)),
+                    child: _buildActionsWithoutOverlay(
+                        bottom, start, labelPosition)));
+          else
+            return _buildActionsWithoutOverlay(bottom, start, labelPosition);
+        });
+  }
+
+  Widget _buildActionsWithoutOverlay([
+        double bottom, 
+        double start, 
+        LabelPosition labelPosition
+  ]) {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
         Positioned.directional(
-          textDirection: TextDirection.rtl,
+          textDirection: labelPosition == LabelPosition.Left
+              ? TextDirection.rtl
+              : TextDirection.ltr,
           bottom: bottom,
           start: start,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: labelPosition == LabelPosition.Left
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: List.generate(widget.actions.length, (int index) {
-              return _buildChild(index);
+              return _buildChild(index, labelPosition);
             }).reversed.toList()
               ..add(
                 _buildFab(),
@@ -165,61 +278,77 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildChild(int index) {
-    Color backgroundColor = Theme.of(context).cardColor;
-    Color foregroundColor = Theme.of(context).accentColor;
+  Widget _buildChild(int index, LabelPosition labelPosition) {
+    List<Widget> rowChildren = [
+      _buildLabelAction(index),
+      _buildChildAction(index),
+    ];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        FadeTransition(
-          opacity: Tween<double>(begin: 0, end: 1).animate(_controller),
-          child: widget.actions[index].label != null
-              ? Container(
-                  padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
-                  margin: EdgeInsets.only(right: 5.0, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.7),
-                        offset: Offset(0.8, 0.8),
-                        blurRadius: 2.4,
-                      )
-                    ],
-                  ),
-                  child: widget.actions[index].label,
-                )
-              : Container(),
+      children: labelPosition == LabelPosition.Left
+                ? rowChildren
+                : rowChildren.reversed.toList()
+    );
+  }
+
+  Widget _buildLabelAction(int index) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0, end: 1).animate(_controller),
+      child: widget.actions[index].label != null
+          ? Container(
+              padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+              margin: EdgeInsets.only(right: 5.0, bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.7),
+                    offset: Offset(0.8, 0.8),
+                    blurRadius: 2.4,
+                  )
+                ],
+              ),
+              child: widget.actions[index].label,
+            )
+          : Container(),
+    );
+  }
+
+  Widget _buildChildAction(int index) {
+    Color backgroundColor =
+        widget.actions[index].backgroundColor ?? Theme.of(context).cardColor;
+    Color foregroundColor =
+        widget.actions[index].foregroundColor ?? Theme.of(context).accentColor;
+
+    return Container(
+      height: 70.0,
+      width: 56.0,
+      alignment: FractionalOffset.topCenter,
+      child: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: _controller,
+          curve: Interval(0.0, (index + 1) / widget.actions.length,
+              curve: Curves.linear),
         ),
-        Container(
-          height: 70.0,
-          width: 56.0,
-          alignment: FractionalOffset.topCenter,
-          child: ScaleTransition(
-            scale: CurvedAnimation(
-              parent: _controller,
-              curve: Interval(0.0, (index + 1) / widget.actions.length,
-                  curve: Curves.linear),
-            ),
-            child: FloatingActionButton(
-              backgroundColor: backgroundColor,
-              foregroundColor: foregroundColor,
-              mini: true,
-              child: widget.actions[index].child,
-              onPressed: () => _onAction(index),
-            ),
-          ),
+        child: FloatingActionButton(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          mini: true,
+          child: widget.actions[index].child,
+          onPressed: () => _onAction(index),
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildFab() {
     return FloatingActionButton(
       onPressed: toggle,
+      backgroundColor: widget.backgroundColor,
+      foregroundColor: widget.foregroundColor,
       child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
@@ -293,3 +422,5 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
     }
   }
 }
+
+enum LabelPosition { Left, Right }
