@@ -1,3 +1,8 @@
+## [2.0.0] - 26/May/2020
+
+- Feature added. There are now several new properties available. (by @wbsantos).
+  Colors, Label Position and Screen color overlay
+
 ## [1.2.0] - 01/Apr/2020
 
 - Feature added. Text labels on each action widgets (by @CarlosHJuniior).
