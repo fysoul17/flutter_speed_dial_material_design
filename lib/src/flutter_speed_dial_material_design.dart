@@ -20,11 +20,11 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   ///
   /// The [childOnFold] must not be null. Additionally,
   /// if [childOnUnfold] is specified, two widgets([childOnFold] and [childOnUnfold]) will be switched with animation when speed dial is opened/closed.
-  /// 
+  ///
   /// NOTE: In order to apply fade transition between [childOnFold] and [childOnUnfold], make sure one of those has Key field. (eg. ValueKey<int>(value) or UniqueKey()).
   ///       As we using AnimatedSwitcher for transition animation, no key with same type of child will perform no animation. It is AnimatedSwitcher's behaviour.
-  SpeedDialFloatingActionButton({
-      @required this.actions,
+  SpeedDialFloatingActionButton(
+      {@required this.actions,
       this.onAction,
       @required this.childOnFold,
       this.childOnUnfold,
@@ -35,8 +35,7 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
       this.animationDuration = 250,
       this.controller,
       this.isDismissible = false,
-      this.labelPosition
-  });
+      this.labelPosition});
 
   final List<SpeedDialAction> actions;
   final ValueChanged<int> onAction;
@@ -67,13 +66,13 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   ///
   /// If this property is null, then the background will be transparent.
   /// Tip: use the opacity property to create semi-transparent backgrounds. Example:
-  /// ```dart 
-  /// screenColor: Colors.black.withOpacity(0.2) 
+  /// ```dart
+  /// screenColor: Colors.black.withOpacity(0.2)
   /// ```
   final Color screenColor;
 
   /// Define if the action's labels will be at the left or at the right of their action button.
-  /// 
+  ///
   /// If this property is null, then the label position will obey the following rule:
   /// when the floating button is positioned before the middle of the display (on the x axis), the label will be at the right of the action button,
   /// otherwise the label will be at the left of the action button.
@@ -106,12 +105,8 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
 }
 
 class SpeedDialAction {
-  SpeedDialAction({
-      this.child, 
-      this.label, 
-      this.backgroundColor, 
-      this.foregroundColor
-  });
+  SpeedDialAction(
+      {this.child, this.label, this.backgroundColor, this.foregroundColor});
 
   final Widget child;
   final Widget label;
@@ -218,11 +213,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
         : _buildActionsWithoutOverlay(bottom, start, labelPosition);
   }
 
-  Widget _buildActionsWithOverlay([
-        double bottom, 
-        double start, 
-        LabelPosition labelPosition
-  ]) {
+  Widget _buildActionsWithOverlay(
+      [double bottom, double start, LabelPosition labelPosition]) {
     var screenColorSequence = TweenSequence<Color>([
       TweenSequenceItem(
           weight: 1.0,
@@ -246,11 +238,8 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
         });
   }
 
-  Widget _buildActionsWithoutOverlay([
-        double bottom, 
-        double start, 
-        LabelPosition labelPosition
-  ]) {
+  Widget _buildActionsWithoutOverlay(
+      [double bottom, double start, LabelPosition labelPosition]) {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -285,12 +274,11 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
     ];
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: labelPosition == LabelPosition.Left
-                ? rowChildren
-                : rowChildren.reversed.toList()
-    );
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: labelPosition == LabelPosition.Left
+            ? rowChildren
+            : rowChildren.reversed.toList());
   }
 
   Widget _buildLabelAction(int index) {
