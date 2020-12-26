@@ -35,7 +35,10 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
       this.animationDuration = 250,
       this.controller,
       this.isDismissible = false,
-      this.labelPosition});
+      this.labelPosition,
+      this.labelBackgroundColor,
+      this.labelShadowColor,
+      });
 
   final List<SpeedDialAction> actions;
   final ValueChanged<int> onAction;
@@ -78,6 +81,20 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
   /// otherwise the label will be at the left of the action button.
   final LabelPosition labelPosition;
 
+  /// The floating label's background color.
+  ///
+  /// If this property is null then [Colors.white] is used
+  final Color labelBackgroundColor;
+
+  /// The floating label's shadow color.
+  ///
+  /// If this property is null then [Colors.grey.withOpacity(0.7)] is used
+  /// Tip: use the opacity property to create semi-transparent shadows. Example:
+  /// ```dart
+  /// labelShadowColor: Colors.grey.withOpacity(0.7)
+  /// ```
+  final Color labelShadowColor;
+  
   @override
   Widget build(BuildContext context) {
     return AnchoredOverlay(
@@ -97,6 +114,8 @@ class SpeedDialFloatingActionButton extends StatelessWidget {
           isDismissible: isDismissible,
           offset: Offset(offset.dx, offset.dy),
           labelPosition: labelPosition,
+          labelBackgroundColor: labelBackgroundColor,
+          labelShadowColor: labelShadowColor,
         );
       },
       child: FloatingActionButton(onPressed: () {}),
@@ -139,6 +158,8 @@ class SpeedDial extends StatefulWidget {
     this.isDismissible,
     this.offset,
     this.labelPosition,
+    this.labelBackgroundColor,
+    this.labelShadowColor,
   });
 
   final SpeedDialController controller;
@@ -154,6 +175,8 @@ class SpeedDial extends StatefulWidget {
   final bool isDismissible;
   final Offset offset;
   final LabelPosition labelPosition;
+  final Color labelBackgroundColor;
+  final Color labelShadowColor;
 
   @override
   State createState() => _SpeedDialState();
@@ -289,11 +312,11 @@ class _SpeedDialState extends State<SpeedDial> with TickerProviderStateMixin {
               padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
               margin: EdgeInsets.only(right: 5.0, bottom: 20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: widget.labelBackgroundColor ?? Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.7),
+                    color: widget.labelShadowColor ?? Colors.grey.withOpacity(0.7),
                     offset: Offset(0.8, 0.8),
                     blurRadius: 2.4,
                   )
